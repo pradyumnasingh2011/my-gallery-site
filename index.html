@@ -2,34 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tailwind Responsive Gallery</title>
+  <title>🧠 Dynamic Futuristic Gallery</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white">
 
   <!-- Header -->
-  <header class="bg-gray-900 text-white p-5 text-center shadow-md">
-    <h1 class="text-2xl font-bold">Tailwind Gallery – Supports 1000 Files</h1>
-    <p class="text-sm mt-1 text-gray-300">Images & Videos from <code class="text-green-400">/images/</code> folder</p>
+  <header class="text-center py-6 bg-black bg-opacity-50 shadow-md sticky top-0 z-50">
+    <h1 class="text-3xl font-bold tracking-wide">🚀 Futuristic Media Gallery</h1>
+    <p class="text-gray-300 mt-1 text-sm">Optimized for 1000 files, fully responsive with modal view</p>
   </header>
 
-  <!-- Gallery Grid -->
-  <main class="p-6 max-w-7xl mx-auto">
-    <div id="gallery" class="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+  <!-- Gallery -->
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
   </main>
 
-  <!-- Modal Viewer -->
-  <div id="modal" class="fixed inset-0 hidden bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center p-4">
-    <img id="modalImage" class="hidden max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg" />
-    <video id="modalVideo" class="hidden max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg" controls autoplay loop></video>
-    <div class="mt-6 flex gap-4 flex-wrap justify-center">
-      <button id="closeModal" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-md transition">Back</button>
-      <a href="https://pradyumnasingh2011.github.io/milf-hunters-hq/" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md transition">Go to Main Website</a>
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-90 backdrop-blur-md z-50 p-4">
+    <img id="modalImage" class="hidden max-h-[80vh] max-w-[95vw] rounded-xl shadow-2xl transition duration-200" />
+    <video id="modalVideo" class="hidden max-h-[80vh] max-w-[95vw] rounded-xl shadow-2xl" controls autoplay loop></video>
+    <div class="mt-5 flex flex-wrap justify-center gap-4">
+      <button id="closeModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">Close</button>
+      <a href="https://pradyumnasingh2011.github.io/milf-hunters-hq/" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition">Main Website</a>
     </div>
   </div>
 
-  <!-- JavaScript -->
   <script>
     const totalFiles = 1000;
     const imageExts = ['jpg', 'jpeg', 'png', 'webp'];
@@ -42,30 +51,31 @@
 
     for (let i = 1; i <= totalFiles; i++) {
       [...imageExts, ...videoExts].forEach(ext => {
-        const path = `images/${i}.${ext}`;
+        const filePath = `images/${i}.${ext}`;
         const isVideo = videoExts.includes(ext);
+
         const card = document.createElement('div');
-        card.className = 'bg-white shadow rounded-lg overflow-hidden cursor-pointer hover:scale-105 transform transition';
+        card.className = 'rounded-xl overflow-hidden glass shadow-lg hover:scale-[1.03] transition transform duration-200 cursor-pointer';
 
         const media = document.createElement(isVideo ? 'video' : 'img');
-        media.src = path;
+        media.src = filePath;
         media.alt = `Media ${i}`;
-        media.className = 'w-full h-[200px] object-cover';
+        media.className = 'w-full h-[220px] object-cover';
         if (isVideo) media.muted = true;
 
-        media.onerror = () => card.remove(); // skip if file doesn't exist
+        media.onerror = () => card.remove(); // Remove if file doesn't exist
 
         media.onclick = () => {
           modal.style.display = 'flex';
           if (isVideo) {
             modalImage.classList.add('hidden');
             modalVideo.classList.remove('hidden');
-            modalVideo.src = path;
+            modalVideo.src = filePath;
             modalVideo.play();
           } else {
             modalVideo.classList.add('hidden');
             modalImage.classList.remove('hidden');
-            modalImage.src = path;
+            modalImage.src = filePath;
           }
         };
 
