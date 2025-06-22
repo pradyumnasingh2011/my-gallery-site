@@ -54,34 +54,59 @@
       background: rgba(0,0,0,0.8);
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       z-index: 999;
+      padding: 20px;
     }
 
     .modal img {
       max-width: 90%;
-      max-height: 80vh;
+      max-height: 70vh;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     }
 
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 30px;
-      color: white;
+    .button-group {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .modal button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      background: red;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      text-align: center;
-      line-height: 40px;
+      transition: 0.3s;
+    }
+
+    .close-btn {
+      background-color: crimson;
+      color: white;
+    }
+
+    .home-btn {
+      background-color: limegreen;
+      color: white;
+    }
+
+    .modal button:hover {
+      transform: scale(1.05);
     }
 
     @media screen and (max-width: 500px) {
       .card img {
         height: 150px;
+      }
+
+      .modal img {
+        max-height: 50vh;
+      }
+
+      .modal button {
+        font-size: 14px;
+        padding: 8px 16px;
       }
     }
   </style>
@@ -96,12 +121,15 @@
 
 <!-- Modal -->
 <div class="modal" id="modal">
-  <span class="close" id="closeModal">×</span>
   <img id="modalImage" src="" alt="Full View">
+  <div class="button-group">
+    <button class="close-btn" id="closeModal">Back</button>
+       <button class="home-btn" onclick="location.href='https://pradyumnasingh2011.github.io/milf-hunters-hq/'">Go to Main Website</button>
+  </div>
 </div>
 
 <script>
-  const totalImages = 1000; // Change this to how many you plan to upload
+  const totalImages = 10; // Change this to number of images
   const extensions = ['jpg', 'jpeg', 'png'];
   const gallery = document.getElementById('gallery');
   const modal = document.getElementById('modal');
@@ -117,7 +145,7 @@
       const img = document.createElement('img');
       img.src = imgPath;
       img.alt = `Image ${i}`;
-      img.onerror = () => card.remove(); // remove if image doesn't exist
+      img.onerror = () => card.remove(); // remove broken image
 
       img.onclick = () => {
         modalImage.src = img.src;
