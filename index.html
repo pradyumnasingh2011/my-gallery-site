@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Auto Gallery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+
+    nav {
+      background-color: #222;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      background-color: #007bff;
+      padding: 10px 15px;
+      border-radius: 5px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .gallery-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .gallery-img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: 0.3s;
+    }
+
+    .gallery-img:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h2>My Gallery</h2>
+    <a href="#gallery">Gallery</a>
+  </nav>
+
+  <h1 id="gallery">Auto Gallery</h1>
+
+  <div class="gallery-container" id="gallery-container"></div>
+
+  <script>
+    const folder = 'images/';
+    const totalImages = 20; // Max number of images
+    const extensions = ['jpg', 'jpeg', 'png'];
+
+    const gallery = document.getElementById('gallery-container');
+
+    for (let i = 1; i <= totalImages; i++) {
+      extensions.forEach(ext => {
+        const img = document.createElement('img');
+        img.src = `${folder}${i}.${ext}`;
+        img.className = 'gallery-img';
+        img.onerror = () => img.remove(); // Removes broken image links
+        gallery.appendChild(img);
+      });
+    }
+  </script>
+
+</body>
+</html>
