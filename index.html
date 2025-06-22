@@ -1,100 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>🧠 Dynamic Futuristic Gallery</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Futuristic Phone-Style Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-
-    .glass {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+    header {
+      background: #111;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 0 15px #00ffe0;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #00ffc3;
+      letter-spacing: 1px;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding: 16px;
+    }
+    .card {
+      width: 120px;
+      height: 120px;
+      background: #222;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 255, 255, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.1);
+    }
+    .card img, .card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+    .modal img, .modal video {
+      max-width: 95vw;
+      max-height: 80vh;
+      border-radius: 10px;
+      box-shadow: 0 0 20px cyan;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .controls button, .controls a {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+    }
+    .controls button:hover, .controls a:hover {
+      background: #00ddaa;
+    }
+    .back-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: crimson;
+      color: white;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white">
-
-  <!-- Header -->
-  <header class="text-center py-6 bg-black bg-opacity-50 shadow-md sticky top-0 z-50">
-    <h1 class="text-3xl font-bold tracking-wide">🚀 Futuristic Media Gallery</h1>
-    <p class="text-gray-300 mt-1 text-sm">Optimized for 1000 files, fully responsive with modal view</p>
+<body>
+  <header>
+    <h1>📱 Quantum Gallery 3025</h1>
   </header>
 
-  <!-- Gallery -->
-  <main class="max-w-7xl mx-auto px-4 py-10">
-    <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-  </main>
+  <a class="controls back-btn" href="https://pradyumnasingh2011.github.io/milf-hunters-hq/">⬅ Home</a>
 
-  <!-- Modal -->
-  <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-90 backdrop-blur-md z-50 p-4">
-    <img id="modalImage" class="hidden max-h-[80vh] max-w-[95vw] rounded-xl shadow-2xl transition duration-200" />
-    <video id="modalVideo" class="hidden max-h-[80vh] max-w-[95vw] rounded-xl shadow-2xl" controls autoplay loop></video>
-    <div class="mt-5 flex flex-wrap justify-center gap-4">
-      <button id="closeModal" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">Close</button>
-      <a href="https://pradyumnasingh2011.github.io/milf-hunters-hq/" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition">Main Website</a>
+  <div class="gallery" id="gallery"></div>
+
+  <div class="modal" id="modal">
+    <img id="modalImage" src="" alt="View" style="display: none;">
+    <video id="modalVideo" controls style="display: none;"></video>
+    <div class="controls">
+      <button id="prev">⬅ Prev</button>
+      <button id="next">Next ➡</button>
+      <a id="download" download target="_blank">⬇ Download</a>
+      <button id="close">❌ Close</button>
     </div>
   </div>
 
   <script>
-    const totalFiles = 10000;
+    const files = 100;
     const imageExts = ['jpg', 'jpeg', 'png', 'webp'];
     const videoExts = ['mp4', 'webm'];
     const gallery = document.getElementById('gallery');
     const modal = document.getElementById('modal');
     const modalImage = document.getElementById('modalImage');
     const modalVideo = document.getElementById('modalVideo');
-    const closeModal = document.getElementById('closeModal');
+    const download = document.getElementById('download');
+    const closeBtn = document.getElementById('close');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
 
-    for (let i = 1; i <= totalFiles; i++) {
-      [...imageExts, ...videoExts].forEach(ext => {
-        const filePath = `images/${i}.${ext}`;
-        const isVideo = videoExts.includes(ext);
+    let mediaList = [];
+    let currentIndex = -1;
 
-        const card = document.createElement('div');
-        card.className = 'rounded-xl overflow-hidden glass shadow-lg hover:scale-[1.03] transition transform duration-200 cursor-pointer';
+    function openModal(index) {
+      currentIndex = index;
+      const media = mediaList[index];
+      const isVideo = videoExts.includes(media.ext);
 
-        const media = document.createElement(isVideo ? 'video' : 'img');
-        media.src = filePath;
-        media.alt = `Media ${i}`;
-        media.className = 'w-full h-[220px] object-cover';
-        if (isVideo) media.muted = true;
-
-        media.onerror = () => card.remove(); // Remove if file doesn't exist
-
-        media.onclick = () => {
-          modal.style.display = 'flex';
-          if (isVideo) {
-            modalImage.classList.add('hidden');
-            modalVideo.classList.remove('hidden');
-            modalVideo.src = filePath;
-            modalVideo.play();
-          } else {
-            modalVideo.classList.add('hidden');
-            modalImage.classList.remove('hidden');
-            modalImage.src = filePath;
-          }
-        };
-
-        card.appendChild(media);
-        gallery.appendChild(card);
-      });
+      modal.style.display = 'flex';
+      if (isVideo) {
+        modalImage.style.display = 'none';
+        modalVideo.style.display = 'block';
+        modalVideo.src = media.src;
+        modalVideo.play();
+      } else {
+        modalVideo.pause();
+        modalVideo.style.display = 'none';
+        modalImage.style.display = 'block';
+        modalImage.src = media.src;
+      }
+      download.href = media.src;
+      download.download = media.src.split('/').pop();
     }
 
-    closeModal.onclick = () => {
+    function closeModal() {
       modal.style.display = 'none';
       modalImage.src = '';
       modalVideo.pause();
       modalVideo.src = '';
-    };
+    }
+
+    function showNext() {
+      if (currentIndex < mediaList.length - 1) openModal(currentIndex + 1);
+    }
+
+    function showPrev() {
+      if (currentIndex > 0) openModal(currentIndex - 1);
+    }
+
+    closeBtn.onclick = closeModal;
+    nextBtn.onclick = showNext;
+    prevBtn.onclick = showPrev;
 
     modal.onclick = (e) => {
-      if (e.target === modal) closeModal.click();
+      if (e.target === modal) closeModal();
     };
-  </script>
 
+    for (let i = 1; i <= files; i++) {
+      [...imageExts, ...videoExts].forEach(ext => {
+        const src = `images/${i}.${ext}`;
+        const isVideo = videoExts.includes(ext);
+        const test = new Image();
+        test.onload = () => {
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const media = document.createElement(isVideo ? 'video' : 'img');
+          media.src = src;
+          if (isVideo) media.muted = true;
+
+          card.appendChild(media);
+          gallery.appendChild(card);
+
+          const index = mediaList.length;
+          mediaList.push({ src, ext });
+          card.onclick = () => openModal(index);
+        };
+        test.onerror = () => {};
+        test.src = src;
+      });
+    }
+  </script>
 </body>
 </html>
