@@ -1,83 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Auto Gallery</title>
+  <meta charset="UTF-8">
+  <title>Responsive Image Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
+      background-color: #f4f4f4;
     }
 
-    nav {
-      background-color: #222;
+    header {
+      background-color: #1e1e1e;
       color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      background-color: #007bff;
-      padding: 10px 15px;
-      border-radius: 5px;
-    }
-
-    h1 {
+      padding: 15px 30px;
       text-align: center;
-      margin-top: 20px;
     }
 
-    .gallery-container {
+    .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
       padding: 20px;
     }
 
-    .gallery-img {
-      width: 100%;
+    .card {
+      background: white;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: 0.3s;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+      cursor: pointer;
     }
 
-    .gallery-img:hover {
-      transform: scale(1.05);
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    }
+
+    .modal:target {
+      display: flex;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      font-size: 30px;
+      color: white;
+      text-decoration: none;
+      background: red;
+      padding: 5px 15px;
+      border-radius: 5px;
+    }
+
+    @media screen and (max-width: 500px) {
+      .card img {
+        height: 150px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <nav>
-    <h2>My Gallery</h2>
-    <a href="#gallery">Gallery</a>
-  </nav>
+<header>
+  <h1>My Responsive Photo Gallery</h1>
+</header>
 
-  <h1 id="gallery">Auto Gallery</h1>
+<div class="gallery" id="gallery">
+  <!-- Dynamic image boxes will appear here -->
+</div>
 
-  <div class="gallery-container" id="gallery-container"></div>
+<!-- Modal -->
+<div class="modal" id="image-modal">
+  <a href="#" class="close-btn">×</a>
+  <img id="modal-img" src="" alt="Full View">
+</div>
 
-  <script>
-    const folder = 'images/';
-    const totalImages = 1000; // Max number of images
-    const extensions = ['jpg', 'jpeg', 'png'];
+<script>
+  const imageCount = 12; // Change this based on how many images you have
+  const extensions = ['jpg', 'jpeg', 'png'];
+  const gallery = document.getElementById('gallery');
+  const modalImg = document.getElementById('modal-img');
+  const modal = document.getElementById('image-modal');
 
-    const gallery = document.getElementById('gallery-container');
+  for (let i = 1; i <= imageCount; i++) {
+    extensions.forEach(ext => {
+      const imgPath = `images/${i}.${ext}`;
+      const card = document.createElement('div');
+      card.className = 'card';
 
-    for (let i = 1; i <= totalImages; i++) {
-      extensions.forEach(ext => {
-        const img = document.createElement('img');
-        img.src = `${folder}${i}.${ext}`;
-        img.className = 'gallery-img';
-        img.onerror = () => img.remove(); // Removes broken image links
-        gallery.appendChild(img);
-      });
-    }
-  </script>
+      const img = document.createElement('img');
+      img.src = imgPath;
+      img.alt = `Image ${i}`;
+      img.onerror = () => card.remove();
+
+      img.onclick = () => {
+        modal.style.display = 'flex';
+        modalImg.src = img.src;
+      };
+
+      card.appendChild(img);
+      gallery.appendChild(card);
+    });
+  }
+
+  // Close modal on click anywhere
+  modal.onclick = () => {
+    modal.style.display = 'none';
+    modalImg.src = '';
+  };
+</script>
 
 </body>
 </html>
