@@ -1,174 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Responsive Image Gallery</title>
+  <meta charset="UTF-8" />
+  <title>Tailwind Responsive Gallery</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-
-    header {
-      background-color: #1e1e1e;
-      color: white;
-      padding: 15px 30px;
-      text-align: center;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      transition: transform 0.3s;
-      cursor: pointer;
-    }
-
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 999;
-      padding: 20px;
-    }
-
-    .modal img {
-      max-width: 90%;
-      max-height: 70vh;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
-
-    .button-group {
-      margin-top: 20px;
-      display: flex;
-      gap: 20px;
-    }
-
-    .modal button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .close-btn {
-      background-color: crimson;
-      color: white;
-    }
-
-    .home-btn {
-      background-color: limegreen;
-      color: white;
-    }
-
-    .modal button:hover {
-      transform: scale(1.05);
-    }
-
-    @media screen and (max-width: 500px) {
-      .card img {
-        height: 150px;
-      }
-
-      .modal img {
-        max-height: 50vh;
-      }
-
-      .modal button {
-        font-size: 14px;
-        padding: 8px 16px;
-      }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
 
-<header>
-  <h1>My Responsive Gallery</h1>
-</header>
+  <!-- Header -->
+  <header class="bg-gray-900 text-white p-5 text-center shadow-md">
+    <h1 class="text-2xl font-bold">Tailwind Gallery – Supports 1000 Files</h1>
+    <p class="text-sm mt-1 text-gray-300">Images & Videos from <code class="text-green-400">/images/</code> folder</p>
+  </header>
 
-<div class="gallery" id="gallery"></div>
+  <!-- Gallery Grid -->
+  <main class="p-6 max-w-7xl mx-auto">
+    <div id="gallery" class="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+  </main>
 
-<!-- Modal -->
-<div class="modal" id="modal">
-  <img id="modalImage" src="" alt="Full View">
-  <div class="button-group">
-    <button class="close-btn" id="closeModal">Back</button>
-       <button class="home-btn" onclick="location.href='https://pradyumnasingh2011.github.io/milf-hunters-hq/'">Go to Main Website</button>
+  <!-- Modal Viewer -->
+  <div id="modal" class="fixed inset-0 hidden bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center p-4">
+    <img id="modalImage" class="hidden max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg" />
+    <video id="modalVideo" class="hidden max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg" controls autoplay loop></video>
+    <div class="mt-6 flex gap-4 flex-wrap justify-center">
+      <button id="closeModal" class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-md transition">Back</button>
+      <a href="https://pradyumnasingh2011.github.io/milf-hunters-hq/" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md transition">Go to Main Website</a>
+    </div>
   </div>
-</div>
 
-<script>
-  const totalImages = 10; // Change this to number of images
-  const extensions = ['jpg', 'jpeg', 'png'];
-  const gallery = document.getElementById('gallery');
-  const modal = document.getElementById('modal');
-  const modalImage = document.getElementById('modalImage');
-  const closeModal = document.getElementById('closeModal');
+  <!-- JavaScript -->
+  <script>
+    const totalFiles = 1000;
+    const imageExts = ['jpg', 'jpeg', 'png', 'webp'];
+    const videoExts = ['mp4', 'webm'];
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('modal');
+    const modalImage = document.getElementById('modalImage');
+    const modalVideo = document.getElementById('modalVideo');
+    const closeModal = document.getElementById('closeModal');
 
-  for (let i = 1; i <= totalImages; i++) {
-    extensions.forEach(ext => {
-      const imgPath = `images/${i}.${ext}`;
-      const card = document.createElement('div');
-      card.className = 'card';
+    for (let i = 1; i <= totalFiles; i++) {
+      [...imageExts, ...videoExts].forEach(ext => {
+        const path = `images/${i}.${ext}`;
+        const isVideo = videoExts.includes(ext);
+        const card = document.createElement('div');
+        card.className = 'bg-white shadow rounded-lg overflow-hidden cursor-pointer hover:scale-105 transform transition';
 
-      const img = document.createElement('img');
-      img.src = imgPath;
-      img.alt = `Image ${i}`;
-      img.onerror = () => card.remove(); // remove broken image
+        const media = document.createElement(isVideo ? 'video' : 'img');
+        media.src = path;
+        media.alt = `Media ${i}`;
+        media.className = 'w-full h-[200px] object-cover';
+        if (isVideo) media.muted = true;
 
-      img.onclick = () => {
-        modalImage.src = img.src;
-        modal.style.display = 'flex';
-      };
+        media.onerror = () => card.remove(); // skip if file doesn't exist
 
-      card.appendChild(img);
-      gallery.appendChild(card);
-    });
-  }
+        media.onclick = () => {
+          modal.style.display = 'flex';
+          if (isVideo) {
+            modalImage.classList.add('hidden');
+            modalVideo.classList.remove('hidden');
+            modalVideo.src = path;
+            modalVideo.play();
+          } else {
+            modalVideo.classList.add('hidden');
+            modalImage.classList.remove('hidden');
+            modalImage.src = path;
+          }
+        };
 
-  closeModal.onclick = () => {
-    modal.style.display = 'none';
-    modalImage.src = '';
-  };
+        card.appendChild(media);
+        gallery.appendChild(card);
+      });
+    }
 
-  modal.onclick = (e) => {
-    if (e.target === modal) {
+    closeModal.onclick = () => {
       modal.style.display = 'none';
       modalImage.src = '';
-    }
-  };
-</script>
+      modalVideo.pause();
+      modalVideo.src = '';
+    };
+
+    modal.onclick = (e) => {
+      if (e.target === modal) closeModal.click();
+    };
+  </script>
 
 </body>
 </html>
